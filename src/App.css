@@ -1,0 +1,112 @@
+*:focus {
+  outline: none;
+}
+.App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.App-header {
+  background-color: #282c34;
+  font-size: 20px;
+  color: white;
+  width: 100%;
+  padding: 0;
+  position: fixed;
+  top: 0;
+}
+.App-header div {
+  padding: .5rem 2rem;
+  margin: 0;
+  display: flex;
+}
+.App-content {
+  margin-top: 3rem;
+  width: 100%;
+}
+.App-content div {
+  padding: 1rem 2rem;
+}
+.App-footer {
+  background-color: #282c34;
+  color: white;
+  width: 100%;
+  padding: 0;
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+}
+.App-footer div {
+  padding: .5rem 2rem;
+  margin: 0;
+}
+
+.done {
+  text-decoration: line-through;
+  color: #999;
+}
+.todoTitle {
+  /* border: none;
+  background: transparent;
+  font-size: inherit;
+  font-weight: inherit;
+  font-family: inherit;
+  cursor: pointer; */
+  display: flex;
+  align-items: center;
+  flex: 1 0;
+}
+.todoTitle:hover {
+  /* text-decoration: underline; */
+}
+.todoTitle .text {
+  border-left: 1px dotted #ccc;
+  padding-left:.5rem;
+}
+.todoTitle .title {
+  flex: 1 0;
+}
+.todoTitle .duration {
+  padding-right:.5rem;
+}
+.todoTitle .money {
+  border-right: 1px dotted #ccc;
+  padding-right:.5rem;
+  margin-right:.5rem;
+  min-width:7rem;
+}
+.go.todoTitle .title {
+  color: #E04006;
+}
+
+.action {
+  margin: 0 .5rem 0 0;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  display: flex;
+  border: none;
+}
+.goAction {
+  background: url(/play-16.png) no-repeat;
+}
+.doneAction {
+  background: url(/check-16.png) no-repeat;
+}
+.done .goAction {
+  background: url(/play-16-done.png) no-repeat;
+}
+.done .doneAction {
+  background: url(/check-16-done.png) no-repeat;
+}
+.go .goAction {
+  background: url(/pause-16.png) no-repeat;
+}
+.removeAction {
+  background: url(/remove-16.png) no-repeat;
+}
+.resetTotalAction {
+  background: url(/cancel-16.png) no-repeat;
+}
