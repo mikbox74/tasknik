@@ -51,10 +51,10 @@ function App() {
     console.log(currentId);
     if (!currentId) {
       clearInterval(timer);
-      ChangeFav('/favicon.ico');
+      ChangeFav('./favicon.ico');
     } else {
       clearInterval(timer);
-      ChangeFav('/favicon-go.ico');
+      ChangeFav('./favicon-go.ico');
       setTimer(setInterval(() => {
         setTodos(
           todos.map(todo => {
@@ -143,7 +143,7 @@ function App() {
       <div className="App">
         <header className="App-header">
           <div>
-            <img src="/time-2-32.png" alt="Tasknik"/>&nbsp;
+            <img src="./time-2-32.png" alt="Tasknik"/>&nbsp;
             Tasknik
           </div>
         </header>
