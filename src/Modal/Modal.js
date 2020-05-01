@@ -1,23 +1,45 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+import Context from '../context';
+import Sec2time from '../Helpers/Sec2time';
 import './Modal.css';
 
-export default class Modal extends Component {
-  state = {
-    isOpen: false
-  }
-  render() {
-    return (
-      <React.Fragment>
-        <button onClick={() => this.setState({isOpen: true})}>Открыть</button>
-
-        {this.state.isOpen && (<div className="modal">
-          <div className="modal-body">
-            <h2>Заголовочко</h2>
-            <p>Текстовочко</p>
-            <button onClick={() => this.setState({isOpen: false})}>Закрыть</button>
-          </div>
-        </div>)}
-      </React.Fragment>
-    );
-  }
+function Modal(props) {
+  const {setIsModalOpen} = React.useContext(Context);
+  let projects = props.projects.map((project) => {
+    let tmpDuration = props.todos.map((todo) => {
+      if (todo.projectId == project.id) {
+        return todo.tmpDuration;
+      }
+      return 0;
+    }).reduce((accumulator, currentValue) => accumulator + currentValue);
+    return {
+      id: project.id,
+      title: project.title,
+      tmpDuration
+    }
+  })
+  return (
+    <React.Fragment>
+      {props.isOpen && (<div className="modal">
+        <div className="modal-body">
+          <h2>По проектам</h2>
+          {projects.map(project => {
+            if (project.tmpDuration) {
+              return (<p key={project.id}>{project.title}: {Sec2time(project.tmpDuration)}</p>)
+            }
+          })}
+          <button onClick={() => setIsModalOpen(false)}>&times;</button>
+        </div>
+      </div>)}
+    </React.Fragment>
+  );
 }
+
+Modal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  todos: PropTypes.arrayOf(PropTypes.object).isRequired,
+  projects: PropTypes.arrayOf(PropTypes.object).isRequired,
+}
+
+export default Modal

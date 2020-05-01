@@ -68,6 +68,7 @@ export default function ProjectForm() {
   }
   return (
     <form style={styles.form} onSubmit={submitProject}>
+      <div>Проект</div>
       <input placeholder="Название проекта" style={styles.input} {...titleInput.bind} />
       <input placeholder="Стоимость часа" style={styles.input} {...tariffInput.bind} />
       <button style={styles.button} type="submit">Создать проект</button>

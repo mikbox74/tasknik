@@ -67,6 +67,7 @@ function TodoForm(props) {
   }
   return (
     <form style={styles.form} onSubmit={submitTodo}>
+      <div>Задачу</div>
       <input placeholder="Название задачи" style={styles.input} {...titleInput.bind} />
       <select style={styles.input} value={projectInput.projectId} onChange={projectInput.onChange}>
       <option value="">Выберите проект...</option>

@@ -1,18 +1,16 @@
 import React from 'react';
 import './App.css';
 import TodoList from './Todo/TodoList';
-// import Modal from './Modal/Modal';
 import TodoForm from './Todo/TodoForm';
 import ProjectForm from './Project/ProjectForm';
 import Context from './context';
 import Sec2time from './Helpers/Sec2time';
 import ChangeFav from './Helpers/ChangeFav';
-
-// const TodoForm = React.lazy(() => import('./Todo/TodoForm'));
+import Modal from './Modal/Modal';
 
 function App() {
   const [todos, setTodos] = React.useState([
-    // {id: 1, projectId: 1, title: 'Купить хлеб', completed: true, duration: 0, money: 0, minuteCost: 0},
+    // {id: 1, projectId: 1, title: 'Купить хлеб', completed: true, duration: 0, money: 0, minuteCost: 0, tmpDuration: 0},
   ]);
 
   const [projects, setProjects] = React.useState([
@@ -22,6 +20,7 @@ function App() {
   const [totalTime, setTotalTime] = React.useState(0);
   const [currentId, setCurrentId] = React.useState(0);
   const [timer, setTimer] = React.useState(0);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   React.useEffect(() => {
     let storageTodos = localStorage.getItem('todos');
@@ -60,6 +59,10 @@ function App() {
           todos.map(todo => {
             if (todo.id === currentId) {
               todo.duration++;
+              if (!todo.tmpDuration) {
+                todo.tmpDuration = 0;
+              }
+              todo.tmpDuration++;
               if (todo.duration % 60 === 0) {
                 todo.money += todo.minuteCost;
               }
@@ -103,7 +106,8 @@ function App() {
       completed: false,
       duration: 0,
       money: 0,
-      minuteCost: parseInt(project.tariff, 10)/60
+      minuteCost: parseInt(project.tariff, 10)/60,
+      tmpDuration: 0
     }]));
   }
 
@@ -138,8 +142,31 @@ function App() {
     }
   }
 
+  function resetTotalTime() {
+    setTotalTime(0);
+    setTodos(
+      todos.map(todo => {
+        todo.tmpDuration = 0;
+        return todo;
+      })
+    );
+  }
+
+  let active = todos.filter((todo => !todo.completed))
+  let completed = todos.filter((todo => todo.completed))
+
+  let contextData = {
+    removeTodo, 
+    toggleTodo, 
+    addTodo, 
+    editTodo, 
+    addProject, 
+    toggleGo,
+    setIsModalOpen
+  }
+
   return (
-    <Context.Provider value={{removeTodo, toggleTodo, addTodo, editTodo, addProject, toggleGo}}>
+    <Context.Provider value={contextData}>
       <div className="App">
         <header className="App-header">
           <div>
@@ -149,23 +176,21 @@ function App() {
         </header>
         <div className="App-content">
           <div>
-            {/* <Counter initialCount={0}/> */}
-            {/* <Modal/> */}
-            {/* <React.Suspense fallback={<p>Loading...</p>}>
-              <TodoForm />
-            </React.Suspense> */}
-            {todos.length? <TodoList todos={todos} projects={projects} currentId={currentId} /> : <p>Нет задач</p>}
+            {active.length? <TodoList title="Активные" todos={active} projects={projects} currentId={currentId} /> : <p>Нет активных задач</p>}
+            <h3>Создать</h3>
             <TodoForm projects={projects} />
             <ProjectForm />
+            {completed.length? (<TodoList title="Завершенные" todos={completed} projects={projects} currentId={currentId} />) : <p>Нет завершенных задач</p>}
           </div>
         </div>
         <footer className="App-footer">
-          <div>
+          <div className="totalTimer" onClick={() => (setIsModalOpen(true))}>
             Всего: {Sec2time(totalTime)} &nbsp;
           </div>
-          <span title="Сбросить общий таймер" className="action resetTotalAction" onClick={() => setTotalTime(0)}></span>
+          <span title="Сбросить общий таймер" className="action resetTotalAction" onClick={() => resetTotalTime()}></span>
         </footer>
       </div>
+      <Modal isOpen={isModalOpen} todos={todos} projects={projects} />
     </Context.Provider>
   );
 }
