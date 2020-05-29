@@ -7,6 +7,7 @@ import Context from './context';
 import Sec2time from './Helpers/Sec2time';
 import ChangeFav from './Helpers/ChangeFav';
 import Modal from './Modal/Modal';
+import packageJson from '../package.json';
 
 function App() {
   const [todos, setTodos] = React.useState([
@@ -171,7 +172,7 @@ function App() {
         <header className="App-header">
           <div>
             <img src="./time-2-32.png" alt="Tasknik"/>&nbsp;
-            Tasknik
+            Tasknik v.{packageJson.version}
           </div>
         </header>
         <div className="App-content">
