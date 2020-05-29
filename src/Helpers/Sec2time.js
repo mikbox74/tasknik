@@ -1,5 +1,5 @@
 export default function(timeInSeconds) {
-    const pad = function(num, size) { return ('000' + num).slice(size * -1); };
+    const pad = (num, size) => (num + "").padStart(size, "0");
     const time = parseFloat(timeInSeconds).toFixed(3);
     const hours = Math.floor(time / 60 / 60);
     const minutes = Math.floor(time / 60) % 60;
