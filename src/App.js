@@ -9,6 +9,10 @@ import ChangeFav from './Helpers/ChangeFav';
 import Modal from './Modal/Modal';
 import packageJson from '../package.json';
 
+const appTitle = document.title 
+const appSigns = ["[▶]", "[◀]"]
+let appSignKey = 0
+
 function App() {
   const [todos, setTodos] = React.useState([
     // {id: 1, projectId: 1, title: 'Купить хлеб', completed: true, duration: 0, money: 0, minuteCost: 0, tmpDuration: 0},
@@ -52,10 +56,13 @@ function App() {
     if (!currentId) {
       clearInterval(timer);
       ChangeFav('./favicon.ico');
+      document.title = appTitle;
     } else {
       clearInterval(timer);
       ChangeFav('./favicon-go.ico');
       setTimer(setInterval(() => {
+        document.title = appSigns[appSignKey] + " " + appTitle;
+        appSignKey = (appSignKey+1)%2
         setTodos(
           todos.map(todo => {
             if (todo.id === currentId) {

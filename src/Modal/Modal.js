@@ -12,7 +12,7 @@ function Modal(props) {
         return todo.tmpDuration;
       }
       return 0;
-    }).reduce((accumulator, currentValue) => accumulator + currentValue);
+    }).reduce((accumulator, currentValue) => accumulator + currentValue, 0);
     return {
       id: project.id,
       title: project.title,
