@@ -9,6 +9,25 @@ import ChangeFav from './Helpers/ChangeFav';
 import Modal from './Modal/Modal';
 import packageJson from '../package.json';
 
+const styles = {
+  button: {
+    cursor: 'pointer',
+    background: '#e91615',
+    color: '#fff',
+    border: 0,
+    height: '1.5rem'
+  },
+  buttons: {
+    padding:0,
+    marginLeft: "auto",
+    alignItems: "center"
+  },
+  button2: {
+    marginLeft: ".5rem",
+    background: '#29f605'
+  }
+}
+
 const appTitle = document.title 
 const appSigns = ["[▶]", "[◀]"]
 let appSignKey = 0
@@ -160,6 +179,56 @@ function App() {
     );
   }
 
+  function exportData() {
+    let blob = JSON.stringify({
+      totalTime: localStorage.getItem('totalTime'),
+      todos: localStorage.getItem('todos'),
+      projects: localStorage.getItem('projects'),
+    })
+    let name = "tasknik.json"
+    if (typeof navigator.msSaveBlob == "function") {
+      return navigator.msSaveBlob(blob, name)
+    }
+
+    let saver = document.createElementNS("http://www.w3.org/1999/xhtml", "a")
+    let blobURL = URL.createObjectURL(new Blob([blob], {type: "application/json"}))
+
+    saver.href = blobURL
+    saver.download = name
+    saver.dispatchEvent(new MouseEvent("click"))
+    URL.revokeObjectURL(blobURL)
+    saver = null
+  }
+
+  function importData() {
+    if (window.confirm("Все задачи, проекты и таймеры будут перезаписаны. Продолжить?")) {
+      setCurrentId(0)
+      let selector = document.createElementNS("http://www.w3.org/1999/xhtml", "input")
+      selector.type = "file"
+      selector.accept = "application/json"
+      selector.addEventListener("change", () => {
+        if (selector.files && selector.files[0]) {
+          let file = selector.files[0]
+          let reader = new FileReader()
+          reader.addEventListener('load', function (e) {
+            try {
+              let result = JSON.parse(e.target.result)
+              localStorage.setItem('totalTime', result.totalTime)
+              localStorage.setItem('todos', result.todos)
+              localStorage.setItem('projects', result.projects)
+              window.location.reload()
+            } catch (e) {
+              window.alert("Не удалось прочитать файл")
+            }
+          })
+          reader.readAsText(file)
+        }
+        selector = null
+      })
+      selector.dispatchEvent(new MouseEvent("click"))
+    }
+  }
+
   let active = todos.filter((todo => !todo.completed))
   let completed = todos.filter((todo => todo.completed))
 
@@ -178,8 +247,20 @@ function App() {
       <div className="App">
         <header className="App-header">
           <div>
-            <img src="./time-2-32.png" alt="Tasknik"/>&nbsp;
-            Tasknik v.{packageJson.version}
+            <div style={{padding:0}}>
+              <img src="./time-2-32.png" alt="Tasknik"/>&nbsp;
+              Tasknik v.{packageJson.version}
+            </div>
+            <div style={styles.buttons}>
+              <button 
+                style={styles.button} 
+                onClick={() => (importData())}
+                type="button">Импорт</button>
+              <button 
+                style={{...styles.button, ...styles.button2}} 
+                onClick={() => (exportData())}
+                type="button">Экспорт</button>
+            </div>
           </div>
         </header>
         <div className="App-content">
