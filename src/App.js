@@ -114,6 +114,10 @@ function App() {
     }
   }, [currentId]);
 
+  React.useEffect(() => {
+    calcSelectedTotals()
+  }, [selected]);
+
   function toggleTodo(id) {
     console.log('toggleTodo ' + id);
     setTodos(
@@ -183,7 +187,7 @@ function App() {
 
   function toggleCheck(id, e) {
     if (e.target.checked)
-      setSelected(selected.concat([id]))
+      setSelected(selected.concat([id]));
     else 
       setSelected(selected.filter(item => item !== id));
   }
@@ -322,12 +326,8 @@ function App() {
           <span title="Сбросить общий таймер" className="action resetTotalAction" onClick={() => resetTotalTime()}></span>
           
           <div style={{...styles.buttons, paddingRight: "2rem"}}>
-            <button 
-              style={{...styles.button, ...styles.button3}} 
-              onClick={() => calcSelectedTotals()}
-              type="button">Итог по выбранным:</button>
             <span>
-              &nbsp;{Sec2time(selectedTotalTime)} / {Math.round(selectedTotalAmount)}
+              Итог по выбранным: {Sec2time(selectedTotalTime)} / {Math.round(selectedTotalAmount)}
             </span>
           </div>
         </footer>
