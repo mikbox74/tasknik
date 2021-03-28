@@ -83,6 +83,10 @@
   margin-right:.5rem;
   min-width:7rem;
 }
+.todoTitle input[type="checkbox"] {
+  cursor: pointer;
+}
+
 .go.todoTitle .title {
   color: #E04006;
 }
@@ -115,4 +119,8 @@
 }
 .resetTotalAction {
   background: url(./images/cancel-16.png) no-repeat;
+}
+
+.spacer {
+  flex-grow: 1;
 }

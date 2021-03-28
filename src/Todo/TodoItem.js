@@ -15,7 +15,7 @@ const styles = {
 };
 
 function TodoItem({project, todo, index, currentId}) {
-  const {removeTodo, toggleTodo, toggleGo} = React.useContext(Context);
+  const {removeTodo, toggleTodo, toggleGo, toggleCheck} = React.useContext(Context);
   let classes = ['todoTitle'];
   if (todo.completed) {
     classes.push('done');
@@ -26,6 +26,7 @@ function TodoItem({project, todo, index, currentId}) {
   return (
     <li style={styles.li}>
       <span className={classes.join(' ')}>
+        <input type="checkbox" onChange={toggleCheck.bind(null, todo.id)} />
         <span className="action goAction" onClick={toggleGo.bind(null, todo.id)}></span>
         <span className="action doneAction" onClick={toggleTodo.bind(null, todo.id)}></span>
         <span className="text duration">

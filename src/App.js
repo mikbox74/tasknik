@@ -10,6 +10,11 @@ import Modal from './Modal/Modal';
 import packageJson from '../package.json';
 
 const styles = {
+  buttons: {
+    padding:0,
+    marginLeft: "auto",
+    alignItems: "center"
+  },
   button: {
     cursor: 'pointer',
     background: '#e91615',
@@ -17,14 +22,13 @@ const styles = {
     border: 0,
     height: '1.5rem'
   },
-  buttons: {
-    padding:0,
-    marginLeft: "auto",
-    alignItems: "center"
-  },
   button2: {
     marginLeft: ".5rem",
     background: '#29f605'
+  },
+  button3: {
+    background: 'transparent',
+    // border: '1px solid',
   }
 }
 
@@ -41,10 +45,18 @@ function App() {
     // {id: 1, title: 'Проект', tariff: 800},
   ]);
 
+  const [selected, setSelected] = React.useState([
+    // 1601760513846,
+  ]);
+
+
   const [totalTime, setTotalTime] = React.useState(0);
   const [currentId, setCurrentId] = React.useState(0);
   const [timer, setTimer] = React.useState(0);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  const [selectedTotalTime, setSelectedTotalTime] = React.useState(0);
+  const [selectedTotalAmount, setSelectedTotalAmount] = React.useState(0);
 
   React.useEffect(() => {
     let storageTodos = localStorage.getItem('todos');
@@ -169,6 +181,13 @@ function App() {
     }
   }
 
+  function toggleCheck(id, e) {
+    if (e.target.checked)
+      setSelected(selected.concat([id]))
+    else 
+      setSelected(selected.filter(item => item !== id));
+  }
+
   function resetTotalTime() {
     setTotalTime(0);
     setTodos(
@@ -185,7 +204,16 @@ function App() {
       todos: localStorage.getItem('todos'),
       projects: localStorage.getItem('projects'),
     })
-    let name = "tasknik.json"
+
+    let date = new Date()
+    let name = "tasknik "
+    //day
+    name += `${date.getDate().toString().padStart(2, "0")}-${(date.getMonth()+1).toString().padStart(2, "0")}-${date.getFullYear()}`
+    //time
+    name += ` ${date.getHours().toString().padStart(2, "0")}-${date.getMinutes().toString().padStart(2, "0")}-${date.getSeconds().toString().padStart(2, "0")}`
+    //extension
+    name += ".json"
+
     if (typeof navigator.msSaveBlob == "function") {
       return navigator.msSaveBlob(blob, name)
     }
@@ -229,10 +257,25 @@ function App() {
     }
   }
 
+  function calcSelectedTotals() {
+    let selectedTotalTime = 0
+    let selectedTotalAmount = 0
+    console.log(selected)
+    todos.map(todo => {
+      if (selected.indexOf(todo.id) !== -1) {
+        selectedTotalTime += todo.duration
+        selectedTotalAmount += todo.money
+      }
+    })
+    setSelectedTotalTime(selectedTotalTime)
+    setSelectedTotalAmount(selectedTotalAmount)
+  }
+
   let active = todos.filter((todo => !todo.completed))
   let completed = todos.filter((todo => todo.completed))
 
   let contextData = {
+    toggleCheck, 
     removeTodo, 
     toggleTodo, 
     addTodo, 
@@ -277,6 +320,16 @@ function App() {
             Всего: {Sec2time(totalTime)} &nbsp;
           </div>
           <span title="Сбросить общий таймер" className="action resetTotalAction" onClick={() => resetTotalTime()}></span>
+          
+          <div style={{...styles.buttons, paddingRight: "2rem"}}>
+            <button 
+              style={{...styles.button, ...styles.button3}} 
+              onClick={() => calcSelectedTotals()}
+              type="button">Итог по выбранным:</button>
+            <span>
+              &nbsp;{Sec2time(selectedTotalTime)} / {Math.round(selectedTotalAmount)}
+            </span>
+          </div>
         </footer>
       </div>
       <Modal isOpen={isModalOpen} todos={todos} projects={projects} />
