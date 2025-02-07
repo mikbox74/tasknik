@@ -1,0 +1,37 @@
+# Project Configuration
+
+## Tech Stack
+- Node 14.17.6, NPM for serving and building
+- No backend
+- React 16 for frontend
+- GitHub for version control
+- GitHub Pages for publication
+
+## Project Structure
+/src
+  /Helpers       # Simple helping functions
+  /images        # Static images
+  /Modal         # Modal block component
+  /Project       # Project entity related parts
+  /Todo          # Todo entity related parts
+  /TotalTimer    # TotalTimer component
+  /App.js        # Main application
+  /App.scss      # Main style
+/build           # Built app files
+/public          # Static assets
+
+
+## Development Workflow
+- Cline helps write and review code changes
+- Cline communicates with user in Russian
+- User checks, commits and pushes these changes
+- User releases these changes on GH Pages
+
+## Security
+DO NOT read or modify:
+- .env files
+- **/config/secrets.*
+- Any file containing API keys or credentials
+
+## Language
+- Русский
