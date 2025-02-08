@@ -328,7 +328,7 @@ function App() {
             Всего: {Sec2time(totalTime)} &nbsp;
           </div>
           <span title="Сбросить общий таймер" className="action resetTotalAction" onClick={() => resetTotalTime()}>
-            <XCircle size={16} color="orange" stroke-width="2" />
+            <XCircle size={16} color="orange" strokeWidth="2" />
           </span>
           
           <div style={{...styles.buttons, paddingRight: "2rem"}}>

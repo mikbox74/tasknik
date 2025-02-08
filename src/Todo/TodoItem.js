@@ -29,10 +29,10 @@ function TodoItem({project, todo, index, currentId}) {
       <span className={classes.join(' ')}>
         <input type="checkbox" onChange={toggleCheck.bind(null, todo.id)} />
         <span className="action goAction" onClick={toggleGo.bind(null, todo.id)}>
-          {(todo.id === currentId) ? <PauseCircle size={16} color="red" stroke-width="2" /> : <PlayCircle size={16} color="blue" stroke-width="2" /> }
+          {(todo.id === currentId) ? <PauseCircle size={16} color="red" strokeWidth="2" /> : <PlayCircle size={16} color="blue" strokeWidth="2" /> }
         </span>
         <span className="action doneAction" onClick={toggleTodo.bind(null, todo.id)}>
-          <Check size={16} color="green" stroke-width="2" />
+          <Check size={16} color="green" strokeWidth="2" />
         </span>
         <span className="text duration">
         {Sec2time(todo.duration)}
@@ -45,7 +45,7 @@ function TodoItem({project, todo, index, currentId}) {
         </span>
       </span>
       <button className="action removeAction" onClick={removeTodo.bind(null, todo.id)}>
-        <XSquare size={16} color="red" stroke-width="2" />
+        <XSquare size={16} color="red" strokeWidth="2" />
       </button>
     </li>
   );
