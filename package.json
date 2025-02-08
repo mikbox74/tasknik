@@ -1,6 +1,6 @@
 {
   "name": "tasknik",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "private": true,
   "homepage": "http://mikbox74.github.io/tasknik",
   "dependencies": {
@@ -11,7 +11,12 @@
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "react-scripts": "3.3.0"
+    "react-feather": "^2.0.9"
+  },
+  "devDependencies": {
+    "react-scripts": "3.3.0",
+    "react-dev-utils": "10.0.0",
+    "node-sass": "4.14.1"
   },
   "scripts": {
     "start": "react-scripts start",

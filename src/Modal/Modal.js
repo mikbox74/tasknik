@@ -8,7 +8,7 @@ function Modal(props) {
   const {setIsModalOpen} = React.useContext(Context);
   let projects = props.projects.map((project) => {
     let tmpDuration = props.todos.map((todo) => {
-      if (todo.projectId == project.id) {
+      if (todo.projectId === project.id) {
         return todo.tmpDuration;
       }
       return 0;
@@ -24,7 +24,9 @@ function Modal(props) {
       {props.isOpen && (<div className="modal">
         <div className="modal-body">
           <h2>По проектам</h2>
-          {projects.map(project => {
+          {
+          // eslint-disable-next-line
+          projects.map(project => {
             if (project.tmpDuration) {
               return (<p key={project.id}>{project.title}: {Sec2time(project.tmpDuration)}</p>)
             }

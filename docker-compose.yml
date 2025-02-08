@@ -1,0 +1,15 @@
+version: "3"
+services:
+  node:
+    container_name: tasknik-dev
+    build:
+      context: ./
+    ports:
+      - "3000:3000"
+    volumes:
+      - ".:/project"
+    environment:
+      NODE_ENV: development
+      HOST: 0.0.0.0
+    restart: unless-stopped
+    tty: true

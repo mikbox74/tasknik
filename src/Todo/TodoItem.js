@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Context from '../context';
 import Sec2time from '../Helpers/Sec2time';
+import { PlayCircle, PauseCircle, Check, XSquare } from 'react-feather';
 
 const styles = {
   li: {
@@ -27,8 +28,12 @@ function TodoItem({project, todo, index, currentId}) {
     <li style={styles.li}>
       <span className={classes.join(' ')}>
         <input type="checkbox" onChange={toggleCheck.bind(null, todo.id)} />
-        <span className="action goAction" onClick={toggleGo.bind(null, todo.id)}></span>
-        <span className="action doneAction" onClick={toggleTodo.bind(null, todo.id)}></span>
+        <span className="action goAction" onClick={toggleGo.bind(null, todo.id)}>
+          {(todo.id === currentId) ? <PauseCircle size={16} color="red" stroke-width="2" /> : <PlayCircle size={16} color="blue" stroke-width="2" /> }
+        </span>
+        <span className="action doneAction" onClick={toggleTodo.bind(null, todo.id)}>
+          <Check size={16} color="green" stroke-width="2" />
+        </span>
         <span className="text duration">
         {Sec2time(todo.duration)}
         </span>
@@ -39,7 +44,9 @@ function TodoItem({project, todo, index, currentId}) {
         {Math.round(todo.money)}
         </span>
       </span>
-      <button className="action removeAction" onClick={removeTodo.bind(null, todo.id)}>&nbsp;</button>
+      <button className="action removeAction" onClick={removeTodo.bind(null, todo.id)}>
+        <XSquare size={16} color="red" stroke-width="2" />
+      </button>
     </li>
   );
 }

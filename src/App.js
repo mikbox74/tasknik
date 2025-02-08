@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './App.scss';
 import TodoList from './Todo/TodoList';
 import TodoForm from './Todo/TodoForm';
 import ProjectForm from './Project/ProjectForm';
@@ -8,6 +8,7 @@ import Sec2time from './Helpers/Sec2time';
 import ChangeFav from './Helpers/ChangeFav';
 import Modal from './Modal/Modal';
 import packageJson from '../package.json';
+import { XCircle } from 'react-feather';
 
 const styles = {
   buttons: {
@@ -112,10 +113,12 @@ function App() {
         );
       }, 1000));
     }
+    // eslint-disable-next-line
   }, [currentId]);
 
   React.useEffect(() => {
     calcSelectedTotals()
+    // eslint-disable-next-line
   }, [selected]);
 
   function toggleTodo(id) {
@@ -265,6 +268,7 @@ function App() {
     let selectedTotalTime = 0
     let selectedTotalAmount = 0
     console.log(selected)
+    // eslint-disable-next-line
     todos.map(todo => {
       if (selected.indexOf(todo.id) !== -1) {
         selectedTotalTime += todo.duration
@@ -323,7 +327,9 @@ function App() {
           <div className="totalTimer" onClick={() => (setIsModalOpen(true))}>
             Всего: {Sec2time(totalTime)} &nbsp;
           </div>
-          <span title="Сбросить общий таймер" className="action resetTotalAction" onClick={() => resetTotalTime()}></span>
+          <span title="Сбросить общий таймер" className="action resetTotalAction" onClick={() => resetTotalTime()}>
+            <XCircle size={16} color="orange" stroke-width="2" />
+          </span>
           
           <div style={{...styles.buttons, paddingRight: "2rem"}}>
             <span>
