@@ -100,6 +100,7 @@ function App() {
         setTodos(
           todos.map(todo => {
             if (todo.id === currentId) {
+              todo.durationMs || (todo.durationMs = todo.duration*1000);
               let diff = Date.now() - startAt;
               todo.durationMs += diff;
               startAt = Date.now();
