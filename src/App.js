@@ -18,14 +18,15 @@ const styles = {
   },
   button: {
     cursor: 'pointer',
-    background: '#e91615',
-    color: '#fff',
-    border: 0,
+    color: '#e91615',
+    background: 'transparent',
+    border: '2px solid',
+    borderRadius: '3px',
     height: '1.5rem'
   },
   button2: {
     marginLeft: ".5rem",
-    background: '#29f605'
+    color: '#40a040'
   },
   button3: {
     background: 'transparent',
@@ -92,16 +93,17 @@ function App() {
     } else {
       clearInterval(timer);
       ChangeFav('./favicon-go.ico');
+      let startAt = Date.now();
       setTimer(setInterval(() => {
         document.title = appSigns[appSignKey] + " " + appTitle;
         appSignKey = (appSignKey+1)%2
         setTodos(
           todos.map(todo => {
             if (todo.id === currentId) {
-              todo.duration++;
-              if (!todo.tmpDuration) {
-                todo.tmpDuration = 0;
-              }
+              let diff = Date.now() - startAt;
+              todo.durationMs += diff;
+              startAt = Date.now();
+              todo.duration = Math.round(todo.durationMs / 1000);
               todo.tmpDuration++;
               if (todo.duration % 60 === 0) {
                 todo.money += todo.minuteCost;
@@ -151,6 +153,7 @@ function App() {
       title,
       completed: false,
       duration: 0,
+      durationMs: 0,
       money: 0,
       minuteCost: parseInt(project.tariff, 10)/60,
       tmpDuration: 0
@@ -249,10 +252,18 @@ function App() {
             try {
               let result = JSON.parse(e.target.result)
               localStorage.setItem('totalTime', result.totalTime)
-              localStorage.setItem('todos', result.todos)
+              // Process todos to ensure durationMs field
+              let todos = JSON.parse(result.todos).map(todo => {
+                if (!todo.durationMs) {
+                  todo.durationMs = todo.duration * 1000;
+                }
+                return todo;
+              });
+              localStorage.setItem('todos', JSON.stringify(todos))
               localStorage.setItem('projects', result.projects)
               window.location.reload()
             } catch (e) {
+              console.error(e);
               window.alert("Не удалось прочитать файл")
             }
           })
@@ -325,7 +336,7 @@ function App() {
         </div>
         <footer className="App-footer">
           <div className="totalTimer" onClick={() => (setIsModalOpen(true))}>
-            Всего: {Sec2time(totalTime)} &nbsp;
+            Всего: ~{Sec2time(totalTime)} &nbsp;
           </div>
           <span title="Сбросить общий таймер" className="action resetTotalAction" onClick={() => resetTotalTime()}>
             <XCircle size={16} color="orange" strokeWidth="2" />

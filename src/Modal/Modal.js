@@ -28,7 +28,7 @@ function Modal(props) {
           // eslint-disable-next-line
           projects.map(project => {
             if (project.tmpDuration) {
-              return (<p key={project.id}>{project.title}: {Sec2time(project.tmpDuration)}</p>)
+              return (<p key={project.id}>{project.title}: ~{Sec2time(project.tmpDuration)}</p>)
             }
           })}
           <button onClick={() => setIsModalOpen(false)}>&times;</button>
