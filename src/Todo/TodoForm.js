@@ -1,6 +1,7 @@
 import React from 'react';
 //import PropTypes from 'prop-types';
 import Context from '../context';
+import ProjectSelectModal from './ProjectSelectModal';
 
 const styles = {
   form: {
@@ -41,11 +42,19 @@ function useTitleInput(defaultTitle = '') {
 
 function useProjectInput(defaultProjectId = '') {
   const [projectId, setProjectId] = React.useState(defaultProjectId);
+  const [selectedProject, setSelectedProject] = React.useState(null);
 
   return {
-    onChange: e => setProjectId(e.target.value),
-    clear: () => setProjectId(''),
-    projectId: projectId
+    selectProject: (project) => {
+      setProjectId(project.id);
+      setSelectedProject(project);
+    },
+    clear: () => {
+      setProjectId('');
+      setSelectedProject(null);
+    },
+    projectId,
+    selectedProject
   }
 }
 
@@ -53,6 +62,7 @@ function TodoForm(props) {
   const {addTodo} = React.useContext(Context);
   const titleInput = useTitleInput('');
   const projectInput = useProjectInput('');
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   function submitTodo (e) {
     e.preventDefault();
@@ -69,12 +79,25 @@ function TodoForm(props) {
     <form style={styles.form} onSubmit={submitTodo}>
       <div>Задачу</div>
       <input placeholder="Название задачи" style={styles.input} {...titleInput.bind} />
-      <select style={styles.input} value={projectInput.projectId} onChange={projectInput.onChange}>
-      <option value="">Выберите проект...</option>
-        {props.projects.map((project, i) => {
-          return <option key={project.id} value={project.id}>{project.title}: {project.tariff}</option>;
-        })}
-      </select>
+      <button 
+        type="button"
+        style={{
+          ...styles.input,
+          cursor: 'pointer',
+          background: projectInput.selectedProject ? '#fff' : '#f5f5f5'
+        }}
+        onClick={() => setIsModalOpen(true)}
+      >
+        {projectInput.selectedProject 
+          ? `${projectInput.selectedProject.title}: ${projectInput.selectedProject.tariff}`
+          : 'Выберите проект...'}
+      </button>
+      <ProjectSelectModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        projects={props.projects}
+        onSelect={projectInput.selectProject}
+      />
       <button style={styles.button} type="submit">Создать задачу</button>
     </form>
   );

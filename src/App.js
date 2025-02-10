@@ -177,6 +177,14 @@ function App() {
     }]));
   }
 
+  function removeProject(id) {
+    console.log('removeProject ' + id);
+    setProjects(projects.filter(project => project.id !== id));
+    setTodos(todos.filter(todo => todo.projectId !== id));
+    localStorage.setItem('projects', JSON.stringify(projects));
+    localStorage.setItem('todos', JSON.stringify(todos));
+  }
+
   function toggleGo(id) {
     console.log('toggleGo ' + id);
 
@@ -302,7 +310,8 @@ function App() {
     editTodo, 
     addProject, 
     toggleGo,
-    setIsModalOpen
+    setIsModalOpen,
+    removeProject
   }
 
   return (
@@ -350,7 +359,12 @@ function App() {
           </div>
         </footer>
       </div>
-      <Modal isOpen={isModalOpen} todos={todos} projects={projects} />
+      <Modal 
+        isOpen={isModalOpen} 
+        todos={todos} 
+        projects={projects}
+        removeProject={removeProject}
+      />
     </Context.Provider>
   );
 }

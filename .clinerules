@@ -8,6 +8,7 @@
 - GitHub Pages for publication
 
 ## Project Structure
+/cline_docs      # CLINE memory bank
 /src
   /Helpers       # Simple helping functions
   /images        # Static images

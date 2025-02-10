@@ -3,6 +3,9 @@
 ## Development Environment
 - Node.js 14.17.6
 - Docker для разработки
+  * Контейнер tasknik-dev всегда запущен
+  * Для запуска приложения: `docker-compose exec node sh -c "cd /project && npm start"`
+  * Приложение доступно на http://localhost:3000
 - Порт 3000 для локальной разработки
 
 ## Core Technologies
