@@ -41,7 +41,25 @@
 .project-list {
     list-style: none;
     padding: 0;
-    margin: 0;
+    flex-shrink: 1;
+    overflow: auto;
+    margin: 0 -2rem 0 0;
+    padding-right: 2rem;
+}
+/* Custom scrollbar styles */
+.project-list::-webkit-scrollbar {
+    width: 5px;
+}
+.project-list::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 3px;
+}
+.project-list::-webkit-scrollbar-thumb {
+    background: #d1d0d0;
+    border-radius: 3px;
+}
+.project-list::-webkit-scrollbar-thumb:hover {
+    background: #888;
 }
 
 .project-item {
