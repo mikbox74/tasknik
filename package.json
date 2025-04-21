@@ -1,6 +1,6 @@
 {
   "name": "tasknik",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "private": true,
   "homepage": "http://mikbox74.github.io/tasknik",
   "dependencies": {

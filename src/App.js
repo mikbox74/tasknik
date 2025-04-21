@@ -10,6 +10,10 @@ import Modal from './Modal/Modal';
 import packageJson from '../package.json';
 import { XCircle } from 'react-feather';
 
+// Иконки для уведомлений (UTF-8 эмодзи)
+const ICON_RUNNING = '👨‍💻'; // Человек за компьютером
+const ICON_STOPPED = '🧘'; // Человек отдыхает (медитирует)
+
 const styles = {
   buttons: {
     padding:0,
@@ -59,7 +63,18 @@ function App() {
 
   const [selectedTotalTime, setSelectedTotalTime] = React.useState(0);
   const [selectedTotalAmount, setSelectedTotalAmount] = React.useState(0);
-  const [lastStartedTodoId, setLastStartedTodoId] = React.useState(null); // Переименовано состояние для ID последнего ЗАПУЩЕННОГО Todo
+  const [lastStartedTodoId, setLastStartedTodoId] = React.useState(null); // ID последнего ЗАПУЩЕННОГО Todo
+  const [notificationPermission, setNotificationPermission] = React.useState(Notification.permission); // Состояние для разрешения уведомлений
+
+  // Запрос разрешения на уведомления при загрузке
+  React.useEffect(() => {
+    // Запрашиваем разрешение только если оно еще не предоставлено и не отклонено
+    if (Notification.permission === 'default') {
+      Notification.requestPermission().then(permission => {
+        setNotificationPermission(permission); // Обновляем состояние после ответа пользователя
+      });
+    }
+  }, []); // Пустой массив зависимостей, чтобы выполнилось один раз при монтировании
 
   React.useEffect(() => {
     let storageTodos = localStorage.getItem('todos');
@@ -147,18 +162,50 @@ function App() {
   const toggleGo = React.useCallback((id) => {
     console.log('toggleGo ' + id);
 
-    for (let i=0; i < todos.length; i++) {
-      if ((todos[i].id === id) && !todos[i].completed) {
+    for (let i = 0; i < todos.length; i++) {
+      const todo = todos[i]; // Получаем текущий todo
+      if ((todo.id === id) && !todo.completed) {
+        const project = projects.find(p => p.id === todo.projectId); // Находим проект
+        // Формируем заголовок уведомления. Если проект не найден (маловероятно, но возможно), используем только название задачи
+        const notificationTitle = project ? `${project.title}: ${todo.title}` : todo.title;
+
         if (id === currentId) {
-          setCurrentId(0); // Останавливаем таймер
+          // --- Остановка таймера ---
+          setCurrentId(0);
+          // Показываем уведомление, если разрешение получено
+          if (notificationPermission === 'granted') {
+            try {
+              // Используем эмодзи в тексте уведомления, т.к. `icon` может не поддерживаться или плохо отображаться везде
+              new Notification(`${ICON_STOPPED} ОСТАНОВЛЕНО: ${notificationTitle}`, {
+                body: `Задача остановлена.`,
+                silent: true // Без звука
+              });
+            } catch (error) {
+              console.error("Ошибка при показе уведомления (остановка):", error);
+            }
+          }
         } else {
-          setLastStartedTodoId(id); // Запоминаем ID при запуске
-          setCurrentId(id); // Запускаем таймер
+          // --- Запуск таймера ---
+          setLastStartedTodoId(id);
+          setCurrentId(id);
+          // Показываем уведомление, если разрешение получено
+          if (notificationPermission === 'granted') {
+            try {
+              // Используем эмодзи в тексте уведомления
+              new Notification(`${ICON_RUNNING} ЗАПУЩЕНО: ${notificationTitle}`, {
+                body: `Задача запущена.`,
+                silent: true // Без звука
+              });
+            } catch (error) {
+              console.error("Ошибка при показе уведомления (запуск):", error);
+            }
+          }
         }
-        break;
+        break; // Выходим из цикла, так как нашли и обработали нужную задачу
       }
     }
-  }, [currentId, todos, setCurrentId, setLastStartedTodoId]); // Добавлены зависимости
+    // Обновляем зависимости: добавляем projects и notificationPermission
+  }, [currentId, todos, projects, notificationPermission, setCurrentId, setLastStartedTodoId]);
 
   // Новая функция для переключения последнего ЗАПУЩЕННОГО Todo
   const toggleLastGo = React.useCallback(() => {
