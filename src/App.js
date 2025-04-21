@@ -124,6 +124,20 @@ function App() {
     // eslint-disable-next-line
   }, [selected]);
 
+  React.useEffect(() => {
+    const handleExtensionEvent = (event) => {
+      if (event.detail.data.hotkey === "hotkey1") {
+        console.log('Хоткей получен!');
+      }
+    };
+
+    window.addEventListener('globalHotkey', handleExtensionEvent);
+    
+    return () => {
+      window.removeEventListener('globalHotkey', handleExtensionEvent);
+    };
+  }, []);
+
   function toggleTodo(id) {
     console.log('toggleTodo ' + id);
     setTodos(
