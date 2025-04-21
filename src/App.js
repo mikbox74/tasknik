@@ -59,6 +59,7 @@ function App() {
 
   const [selectedTotalTime, setSelectedTotalTime] = React.useState(0);
   const [selectedTotalAmount, setSelectedTotalAmount] = React.useState(0);
+  const [lastStartedTodoId, setLastStartedTodoId] = React.useState(null); // Переименовано состояние для ID последнего ЗАПУЩЕННОГО Todo
 
   React.useEffect(() => {
     let storageTodos = localStorage.getItem('todos');
@@ -124,22 +125,10 @@ function App() {
     // eslint-disable-next-line
   }, [selected]);
 
-  React.useEffect(() => {
-    const handleExtensionEvent = (event) => {
-      if (event.detail.data.hotkey === "hotkey1") {
-        console.log('Хоткей получен!');
-      }
-    };
-
-    window.addEventListener('globalHotkey', handleExtensionEvent);
-    
-    return () => {
-      window.removeEventListener('globalHotkey', handleExtensionEvent);
-    };
-  }, []);
-
-  function toggleTodo(id) {
+  // Определение toggleTodo
+  const toggleTodo = React.useCallback((id) => {
     console.log('toggleTodo ' + id);
+    // setLastToggledTodoId(id); // Больше не запоминаем ID здесь
     setTodos(
       todos.map(todo => {
         if (todo.id === id) {
@@ -151,7 +140,61 @@ function App() {
         return todo;
       })
     );
-  }
+  }, [currentId, setCurrentId, setTodos, todos]); // Удалена зависимость setLastToggledTodoId
+
+  // Оборачиваем toggleGo в useCallback и добавляем логику сохранения ID
+  // Перемещено ПЕРЕД toggleLastGo
+  const toggleGo = React.useCallback((id) => {
+    console.log('toggleGo ' + id);
+
+    for (let i=0; i < todos.length; i++) {
+      if ((todos[i].id === id) && !todos[i].completed) {
+        if (id === currentId) {
+          setCurrentId(0); // Останавливаем таймер
+        } else {
+          setLastStartedTodoId(id); // Запоминаем ID при запуске
+          setCurrentId(id); // Запускаем таймер
+        }
+        break;
+      }
+    }
+  }, [currentId, todos, setCurrentId, setLastStartedTodoId]); // Добавлены зависимости
+
+  // Новая функция для переключения последнего ЗАПУЩЕННОГО Todo
+  const toggleLastGo = React.useCallback(() => {
+    if (lastStartedTodoId === null) {
+      console.log('toggleLastGo: lastStartedTodoId не определен');
+      return; // Ничего не делаем, если ID не запомнен
+    }
+
+    const lastStartedTodo = todos.find(todo => todo.id === lastStartedTodoId);
+
+    if (!lastStartedTodo) {
+      console.log(`toggleLastGo: Todo с ID ${lastStartedTodoId} не найден`);
+      return; // Ничего не делаем, если Todo не найден
+    }
+
+    // Проверка на completed не нужна, т.к. toggleGo ее выполняет
+    console.log(`toggleLastGo: Переключаем таймер для Todo с ID ${lastStartedTodoId}`);
+    toggleGo(lastStartedTodoId); // Вызываем toggleGo для последнего запущенного Todo
+  }, [lastStartedTodoId, todos, toggleGo]); // Обновлены зависимости
+
+  React.useEffect(() => {
+    const handleExtensionEvent = (event) => {
+      if (event.detail.data.hotkey === "hotkey1") {
+        // console.log('Хоткей получен!');
+        toggleLastGo(); // Вызываем toggleLastGo
+      }
+    };
+
+    window.addEventListener('globalHotkey', handleExtensionEvent);
+    
+    return () => {
+      window.removeEventListener('globalHotkey', handleExtensionEvent);
+    };
+    // Удален дублирующийся блок window.addEventListener/removeEventListener
+  }, [toggleLastGo]); // Обновлена зависимость
+
 
   function removeTodo(id) {
     console.log('removeTodo ' + id);
@@ -199,20 +242,7 @@ function App() {
     localStorage.setItem('todos', JSON.stringify(todos));
   }
 
-  function toggleGo(id) {
-    console.log('toggleGo ' + id);
-
-    for (let i=0; i < todos.length; i++) {
-      if ((todos[i].id === id) && !todos[i].completed) {
-        if (id === currentId) {
-          setCurrentId(0);
-        } else {
-          setCurrentId(id);
-        }
-        break;
-      }
-    }
-  }
+  // Определение toggleGo перемещено выше
 
   function toggleCheck(id, e) {
     if (e.target.checked)
