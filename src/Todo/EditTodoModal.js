@@ -40,9 +40,13 @@ function EditTodoModal({ isOpen, todo }) {
                          (parseInt(minutes, 10) || 0) * 60 +
                          (parseInt(seconds, 10) || 0);
 
+    // Рассчитываем новую стоимость
+    // todo.minuteCost содержит стоимость одной минуты
+    const newMoney = (totalSeconds / 60) * todo.minuteCost;
+
     if (newTitle) {
-      // Передаем также newDescription в editTodo
-      editTodo(todo.id, newTitle, totalSeconds, newDescription);
+      // Передаем также newDescription и newMoney в editTodo
+      editTodo(todo.id, newTitle, totalSeconds, newDescription, newMoney);
       closeEditModal(); // Закрываем модальное окно после сохранения
     }
   };

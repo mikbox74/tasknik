@@ -269,12 +269,12 @@ function App() {
   }
 
   // Обновленная функция editTodo
-  function editTodo(id, title, duration, description) { // Добавляем description
-    console.log('editTodo ' + id + ' title: ' + title + ' duration: ' + duration + ' description: ' + description);
+  function editTodo(id, title, duration, description, money) { // Добавляем description и money
+    console.log('editTodo ' + id + ' title: ' + title + ' duration: ' + duration + ' description: ' + description + ' money: ' + money);
     setTodos(
       todos.map(todo => {
         if (todo.id === id) {
-          return { ...todo, title: title, duration: parseInt(duration, 10), durationMs: parseInt(duration, 10) * 1000, description: description }; // Сохраняем description
+          return { ...todo, title: title, duration: parseInt(duration, 10), durationMs: parseInt(duration, 10) * 1000, description: description, money: money }; // Сохраняем description и money
         }
         return todo;
       })
