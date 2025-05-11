@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Context from '../context';
 import Sec2time from '../Helpers/Sec2time';
-import { PlayCircle, PauseCircle, Check, XSquare } from 'react-feather';
+import { PlayCircle, PauseCircle, Check, XSquare } from 'react-feather'; // Убираем Edit3
 
 const styles = {
   li: {
@@ -16,7 +16,7 @@ const styles = {
 };
 
 function TodoItem({project, todo, index, currentId}) {
-  const {removeTodo, toggleTodo, toggleGo, toggleCheck} = React.useContext(Context);
+  const {removeTodo, toggleTodo, toggleGo, toggleCheck, setIsEditModalOpen} = React.useContext(Context); // Добавляем setIsEditModalOpen
   let classes = ['todoTitle'];
   if (todo.completed) {
     classes.push('done');
@@ -37,13 +37,21 @@ function TodoItem({project, todo, index, currentId}) {
         <span className="text duration">
         {Sec2time(todo.duration)}
         </span>
-        <span className="text title">
+        <span 
+          className="text title action editAction" 
+          onClick={() => setIsEditModalOpen(true, todo)} 
+          title={todo.description ? todo.description : "Редактировать задачу"}
+        >
           <strong>{project.title}:</strong>&nbsp;{todo.title}
         </span>
         <span className="text money">
         {Math.round(todo.money)}
         </span>
       </span>
+      {/* Можно добавить отдельную кнопку для редактирования, если клик по названию нежелателен */}
+      {/* <button className="action editIconAction" onClick={() => setIsEditModalOpen(true, todo)} title="Редактировать">
+        <Edit3 size={16} color="blue" strokeWidth="2" />
+      </button> */}
       <button className="action removeAction" onClick={removeTodo.bind(null, todo.id)}>
         <XSquare size={16} color="red" strokeWidth="2" />
       </button>

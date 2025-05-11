@@ -7,6 +7,7 @@ import Context from './context';
 import Sec2time from './Helpers/Sec2time';
 import ChangeFav from './Helpers/ChangeFav';
 import Modal from './Modal/Modal';
+import EditTodoModal from './Todo/EditTodoModal'; // Импорт нового модального окна
 import packageJson from '../package.json';
 import { XCircle } from 'react-feather';
 
@@ -60,6 +61,8 @@ function App() {
   const [currentId, setCurrentId] = React.useState(0);
   const [timer, setTimer] = React.useState(0);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [isEditModalOpen, setIsEditModalOpenState] = React.useState(false); // Состояние для модального окна редактирования
+  const [todoToEdit, setTodoToEdit] = React.useState(null); // Состояние для задачи, которую редактируем
 
   const [selectedTotalTime, setSelectedTotalTime] = React.useState(0);
   const [selectedTotalAmount, setSelectedTotalAmount] = React.useState(0);
@@ -265,12 +268,34 @@ function App() {
     }]));
   }
 
-  function editTodo(id, title) {
-    console.log('editTodo ' + id);
-    let todoIndex = todos.findIndex((todo) => todo.id === id);
-    console.log(todos[todoIndex].title = title);
-    setTodos(todos);
+  // Обновленная функция editTodo
+  function editTodo(id, title, duration, description) { // Добавляем description
+    console.log('editTodo ' + id + ' title: ' + title + ' duration: ' + duration + ' description: ' + description);
+    setTodos(
+      todos.map(todo => {
+        if (todo.id === id) {
+          return { ...todo, title: title, duration: parseInt(duration, 10), durationMs: parseInt(duration, 10) * 1000, description: description }; // Сохраняем description
+        }
+        return todo;
+      })
+    );
   }
+
+  const openEditModal = (todo) => {
+    setTodoToEdit(todo);
+    setIsEditModalOpenState(true);
+  };
+
+  const closeEditModal = () => {
+    setTodoToEdit(null);
+    setIsEditModalOpenState(false);
+  };
+  
+  // Передаем setIsEditModalOpen как обертку для setIsEditModalOpenState и setTodoToEdit
+  const setIsEditModalOpen = (isOpen, todo = null) => {
+    setTodoToEdit(todo);
+    setIsEditModalOpenState(isOpen);
+  };
 
   function addProject(title, tariff) {
     console.log('addProject ' + title);
@@ -397,12 +422,15 @@ function App() {
     toggleCheck, 
     removeTodo, 
     toggleTodo, 
-    addTodo, 
-    editTodo, 
-    addProject, 
+    addTodo,
+    editTodo, // Эта функция уже обновлена выше
+    addProject,
     toggleGo,
     setIsModalOpen,
-    removeProject
+    removeProject,
+    openEditModal,      // Передаем openEditModal
+    closeEditModal,     // Передаем closeEditModal
+    setIsEditModalOpen  // Добавляем setIsEditModalOpen в контекст
   }
 
   return (
@@ -455,6 +483,11 @@ function App() {
         todos={todos} 
         projects={projects}
         removeProject={removeProject}
+      />
+      <EditTodoModal
+        isOpen={isEditModalOpen}
+        todo={todoToEdit}
+        // editTodo и setIsEditModalOpen будут получены из Context в самом EditTodoModal
       />
     </Context.Provider>
   );

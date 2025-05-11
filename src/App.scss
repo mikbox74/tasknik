@@ -54,12 +54,6 @@
   color: #999;
 }
 .todoTitle {
-  /* border: none;
-  background: transparent;
-  font-size: inherit;
-  font-weight: inherit;
-  font-family: inherit;
-  cursor: pointer; */
   display: flex;
   align-items: center;
   flex: 1 0;
@@ -73,6 +67,7 @@
 }
 .todoTitle .title {
   flex: 1 0;
+  align-items: center;
 }
 .todoTitle .duration {
   padding-right:.5rem;
